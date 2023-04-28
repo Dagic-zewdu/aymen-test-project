@@ -1,6 +1,3 @@
-Here's the rewritten table component:
-
-```
 <template>
   <table class="table align-middle mb-0 bg-white custom-table">
     <thead class="bg-light">
@@ -20,13 +17,14 @@ Here's the rewritten table component:
       </tr>
     </thead>
     <tbody>
-      <tr v-for="product in store.products" :key="product.id" style=" align-items: center;">
+      <tr v-for="product in store.displayedProducts" :key="product.id" style=" align-items: center;">
+
   <td>
     <div class="form-check">
       <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
     </div>
   </td>
-  <td>
+  <td >
     <div class="d-flex align-items-center">
      <img
         :src="product.images[0]"
@@ -75,50 +73,47 @@ Here's the rewritten table component:
 
     </tbody>
   </table>
+   <div class="pagination">
+    <ul class="pagination__list">
+      <li class="pagination__item" :class="{ 'is-disabled': store.currentPage === 1 }">
+        <button class="pagination__link" :disabled="store.currentPage === 1" @click="store.previousPage()"><img src="../assets/Pagination/arrowright.svg" alt=""></button>
+      </li>
+      <li class="pagination__item" v-for="page in store.totalPages" :key="page" :class="{ 'is-active': store.currentPage === page }">
+        <button class="pagination__link" @click="store.goToPage(page)">{{ page }}</button>
+      </li>
+      <li class="pagination__item" :class="{ 'is-disabled': store.currentPage === store.totalPages }">
+        <button class="pagination__link " :disabled="store.currentPage === store.totalPages" @click="store.nextPage()"><img src="../assets/Pagination/arrowleft.svg" alt="" class="icon">
+        </button>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<script>
-import { defineStore } from 'pinia';
+<script setup>
+import { useProductStore } from '../store/products';
 
-export const useTableStore = defineStore({
-  id: 'table',
-  state: () => ({
-    products: []
-  }),
-  actions: {
-    async fetchProducts() {
-      const response = await fetch('https://dummyjson.com/products');
-      const data = await response.json();
-      console.log(data);
-      this.products = data.products;
-    }
+const store = useProductStore();
+store.fetchProducts();
+
+const truncatedDescription = (product) => {
+  if (product.description.length > 15) {
+    return product.description.slice(0, 15) + '...';
+  } else {
+    return product.description;
   }
-});
+};
 
-export default {
-  name: 'Table',
-  computed: {
-    truncatedDescription() {
-      return (product) => {
-        if (product.description.length > 15) {
-          return product.description.slice(0, 15) + '...';
-        } else {
-          return product.description;
-        }
-      }
+const setActive = (page) => {
+  const paginationLinks = document.querySelectorAll('.pagination-link');
+  paginationLinks.forEach((link) => {
+    if (link.textContent === page.toString()) {
+      link.classList.add('is-current');
+    } else {
+      link.classList.remove('is-current');
     }
-  },
-  setup() {
-    const store = useTableStore();
-    store.fetchProducts();
-
-    return {
-      store
-    };
-  },
+  });
 };
 </script>
-
 <style>
 .custom-table thead {
   font-size: 14px;
@@ -139,4 +134,75 @@ th {
 tr .dflex {
   display: flex;
 }
+
+.pagination {
+  margin-top: 30px;
+  background-color: #FAFAFA;
+}
+
+.pagination__list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+padding: 5px 10px;
+}
+
+.pagination__item {
+  margin: 0 5px;
+    border-radius: 50%;
+
+}
+
+.pagination__link {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  cursor: pointer;
+  padding: 8px 15px;
+  text-decoration: none;
+}
+
+.pagination__link:hover {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+}
+
+.pagination__link:focus,
+.pagination__link:active {
+  background-color: black;
+  border-color: #ddd;
+  color: white;
+  outline: none;
+}
+.pagination__item:first-child .pagination__link:focus,
+.pagination__item:first-child .pagination__link:active, .pagination__item:last-child .pagination__link:focus,
+.pagination__item:last-child .pagination__link:active {
+  background-color: rgb(129, 129, 129);
+  border-color: #ddd;
+  color: white;
+  outline: none;
+}
+
+.pagination__item.is-disabled .pagination__link {
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+.pagination__item.is-active .pagination__link {
+  background-color: black;
+  color: gray;
+}
+.pagination__icon {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+.pagination__item:first-child .pagination__link, .pagination__item:last-child .pagination__link{
+padding-right: 8px;
+padding-left: 8px;}
+
+
+
 </style>

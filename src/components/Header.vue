@@ -1,7 +1,6 @@
 <template>
   <div class="header">
     <div class="header-content">
-      <!-- <p>Header content here</p> -->
     </div>
   </div>
 </template>

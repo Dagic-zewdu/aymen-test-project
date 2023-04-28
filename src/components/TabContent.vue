@@ -23,20 +23,20 @@
 
 </template>
 
-<script>
-export default {
-  name: "TabContent",
-  props: {
-    activeTab2: {
-      type: Number,
-      default: 1,
-    },
+<script setup>
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  activeTab2: {
+    type: Number,
+    default: 1,
   },
-   methods: {
-    activateTab2(tabIndex2) {
-      this.$emit('tab-changed2', tabIndex2);
-    }
-  }
+});
+
+const emit = defineEmits(['tab-changed2']);
+
+const activateTab2 = (tabIndex2) => {
+  emit('tab-changed2', tabIndex2);
 };
 </script>
 

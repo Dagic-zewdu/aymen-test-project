@@ -11,36 +11,35 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Tabs',
-  props: {
-    activeTab1: {
-      type: Number,
-      default: 1
-    }
-  },
-  methods: {
-    activateTab(tabIndex1) {
-      this.$emit('tab-changed1', tabIndex1);
-    }
+<script setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  activeTab1: {
+    type: Number,
+    default: 1
   }
-}
+});
+
+const emit = defineEmits(['tab-changed1']);
+
+const activateTab = (tabIndex1) => {
+  emit('tab-changed1', tabIndex1);
+};
 </script>
 
-<style>
+<style scoped>
 .firstTab .nav-tabs .nav-item .nav-link {
-    font-size: 14px;
+  font-size: 14px;
   border: none;
   border-bottom: 2px solid transparent;
   color: #898A8D;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .firstTab .nav-tabs .nav-item .nav-link.active {
   border-color: black;
   border-bottom: 2.5px solid black;
-  
 }
 
 .firstTab .nav-tabs .nav-item .nav-link.active {
